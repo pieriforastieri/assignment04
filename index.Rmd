@@ -41,15 +41,26 @@ data <- read_csv("data/Download-data-in-Excel.csv")
 
 data <- data %>%
   janitor::clean_names()
+
+data <- data %>%
+  filter(economy == "Argentina" |  economy == "Bolivia" |  economy == "Brazil" |  economy == "Chile" |  economy == "Colombia" |  economy == "Costa Rica" |  economy == "Dominican Rep." |  economy == "Ecuador" |  economy == "El Salvador" |  economy == "Guatemala" |  economy == "Honduras "|  economy == "Mexico" |  economy == "Nicaragua" |  economy == "Panama"|  economy == "Paraguay" |  economy == "Peru" |  economy == "Puerto Rico" |  economy == "Uruguay" |  economy == "Venezuela")
 ```
 
 \newpage
 
-# Exercise 01 (2 points)
+# Four ggplot2 graphs (4 points)
+
+## Graph 01: 
+
+```{r}
+
+
+
+```
 
 \newpage
 
-# Exercise 03 (2 points)
+## Graph 02: 
 
 \newpage
 
