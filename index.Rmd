@@ -82,11 +82,31 @@ graph1
 
 ## Graph 3
 ```{r}
-#Pierina's graph
+graph3 <- data %>% 
+  filter(year == 2020) %>%
+  ggplot2() +
+  aes(x = outstanding_deposits_with_commercial_banks_percent_of_gdp , y = economy) +
+  geom_col(aes(fill = outstanding_deposits_with_commercial_banks_percent_of_gdp), width = 0.7)
+graph3
 ```
 \newpage
 
-## Graph 4
+## Graph 4:
 ```{r}
-#Pierina's graph
+graph4 <- data %>% 
+   ggplot() +
+  aes(x = number_of_commercial_bank_branches_per_100_000_adults , y = outstanding_deposits_with_commercial_banks_percent_of_gdp) +
+  geom_point() +
+  theme_minimal() +
+  labs(title = 'Year: {frame_time}', x = 'of Commercial Branches per 100,000 adults', y = 'Outstanding deposits with commercial banks as percentage of GDP') +
+  transition_time(year) +
+  ease_aes('linear')
+
+animate(graph4, duration = 17, fps = 17, width = 200, height = 200, renderer = gifski_renderer())
+graph4
 ```
+
+
+
+
+
