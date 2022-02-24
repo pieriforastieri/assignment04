@@ -1,5 +1,5 @@
 ---
-title: "index"
+title: "Assingment 04"
 author: "Pierina Forastieri and Sylvia Brown"
 date: "2/25/2022"
 output: html_document
@@ -33,6 +33,7 @@ library(janitor)
 library(ggplot2)
 library(maps)
 library(mapdata)
+library(gganimate)
 ```
 
 
@@ -83,11 +84,20 @@ graph1
 ## Graph 3: bar graph
 ```{r}
 graph3 <- data %>% 
-  filter(year == 2020) %>%
-  ggplot2() +
-  aes(x = outstanding_deposits_with_commercial_banks_percent_of_gdp , y = economy) +
-  geom_col(aes(fill = outstanding_deposits_with_commercial_banks_percent_of_gdp), width = 0.7)
-graph3
+  filter(year == 2020, economy != "Ecuador" ) %>%
+  ggplot() +
+  aes(x = outstanding_deposits_with_commercial_banks_percent_of_gdp , y = economy, show.legend = FALSE) +
+  geom_col(aes(fill = economy), width = 0.7) +
+  geom_text(aes(label = outstanding_deposits_with_commercial_banks_percent_of_gdp), hjust = -0.1) +
+  labs(
+    title = "Outstanding Deposits with Commercial Banks in Latin America Countries",
+    subtitle = "(as % of GDP)",
+    caption = "Source: IMF Financial Access Survey (FAS)",
+    x = "Outstanding Deposits % GDP",
+    y = "Countries"
+  ) +
+  theme_minimal()
+graph3 + theme(legend.position = "none")
 ```
 \newpage
 
@@ -95,14 +105,21 @@ graph3
 ```{r}
 graph4 <- data %>% 
    ggplot() +
-  aes(x = number_of_commercial_bank_branches_per_100_000_adults , y = outstanding_deposits_with_commercial_banks_percent_of_gdp) +
-  geom_point() +
+  aes(x = number_of_commercial_bank_branches_per_100_000_adults , y = outstanding_deposits_with_commercial_banks_percent_of_gdp, color = economy) +
+  geom_point(size = 2) +
   theme_minimal() +
   labs(title = 'Year: {frame_time}', x = 'of Commercial Branches per 100,000 adults', y = 'Outstanding deposits with commercial banks as percentage of GDP') +
   transition_time(year) +
-  ease_aes('linear')
+  ease_aes('linear') +
+  labs(
+    title = "Relationship between number of commercial bank branches and outstanding deposits in Latin America Countries",
+    subtitle = "(from 2004 to 2020)",
+    caption = "Source: IMF Financial Access Survey (FAS)",
+    x = "Number of Commercial Bank Branches per 100,000 Adults",
+    y = "Outstanding Deposits with Commercial Banks as % of GDP"
+  ) 
 
-animate(graph4, duration = 17, fps = 17, width = 200, height = 200, renderer = gifski_renderer())
+animate(graph4, duration = 17, fps = 17, width = 800, height = 800, renderer = gifski_renderer())
 graph4
 ```
 
