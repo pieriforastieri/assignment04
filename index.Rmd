@@ -2,7 +2,9 @@
 title: "Assingment 04"
 author: "Pierina Forastieri and Sylvia Brown"
 date: "2/25/2022"
-output: html_document
+output: 
+  html_document:
+    code_folding: "hide"
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(message = FALSE)
@@ -31,9 +33,12 @@ knitr::knit_hooks$set(chunk = function(x, options) {
 library(tidyverse)
 library(janitor)
 library(ggplot2)
+library(gganimate)
 library(maps)
 library(mapdata)
-library(gganimate)
+library(rworldmap)
+library(gifski)
+library(sp)
 ```
 
 
@@ -57,7 +62,26 @@ data <- data %>%
 TO DOs
 Sylvia to look into how to make a graph for Latin America
 ```{r}
-# Sylvia to return to this
+data %>%
+  filter(year == 2020, economy != "Ecuador") %>%
+  select(
+    economy,
+    number_of_commercial_bank_branches_per_100_000_adults,
+    number_of_at_ms_per_100_000_adults
+  ) %>%
+  pivot_longer(
+    c(
+    number_of_commercial_bank_branches_per_100_000_adults,
+    number_of_at_ms_per_100_000_adults
+  ),
+  names_to = "graph1_variables",
+  values_to = "graph1_values",
+  values_drop_na = TRUE
+) %>%
+  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables)) +
+  geom_bar(position = "dodge", stat = "identity") +
+  theme_minimal()
+
 ```
 
 \newpage
@@ -102,7 +126,8 @@ graph3 + theme(legend.position = "none")
 \newpage
 
 ## Graph 4:
-```{r}
+NOTE TO SYLVIA: the most up-to-date graph is on Pierina's laptop
+```{r, results = FALSE}
 graph4 <- data %>% 
    ggplot() +
   aes(x = number_of_commercial_bank_branches_per_100_000_adults , y = outstanding_deposits_with_commercial_banks_percent_of_gdp, color = economy) +
@@ -123,7 +148,4 @@ animate(graph4, duration = 17, fps = 17, width = 800, height = 800, renderer = g
 graph4
 ```
 
-
-
-
-
+![](graph4.gif)
