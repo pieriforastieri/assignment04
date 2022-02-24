@@ -80,7 +80,7 @@ graph1
 
 \newpage
 
-## Graph 3
+## Graph 3: bar graph
 ```{r}
 graph3 <- data %>% 
   filter(year == 2020) %>%
