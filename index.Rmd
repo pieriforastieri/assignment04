@@ -1,7 +1,7 @@
 ---
 title: "index"
 author: "Pierina Forastieri and Sylvia Brown"
-date: "2/19/2022"
+date: "2/25/2022"
 output: html_document
 ---
 ```{r setup, include=FALSE}
@@ -30,7 +30,11 @@ knitr::knit_hooks$set(chunk = function(x, options) {
 ```{r}
 library(tidyverse)
 library(janitor)
-
+library(ggplot2)
+library(gganimate)
+library(maps)
+library(mapdata)
+library(rworldmap)
 ```
 
 
@@ -41,20 +45,54 @@ data <- read_csv("data/Download-data-in-Excel.csv")
 
 data <- data %>%
   janitor::clean_names()
+
+data <- data %>%
+  filter(economy == "Argentina" |  economy == "Bolivia" |  economy == "Brazil" |  economy == "Chile" |  economy == "Colombia" |  economy == "Costa Rica" |  economy == "Dominican Rep." |  economy == "Ecuador" |  economy == "El Salvador" |  economy == "Guatemala" |  economy == "Honduras "|  economy == "Mexico" |  economy == "Nicaragua" |  economy == "Panama"|  economy == "Paraguay" |  economy == "Peru" |  economy == "Puerto Rico" |  economy == "Uruguay" |  economy == "Venezuela")
 ```
 
 \newpage
 
-# Exercise 01 (2 points)
+# Four ggplot2 graphs (4 points)
+
+## Graph 01: 
+TO DOs
+Sylvia to look into how to make a graph for Latin America
+```{r}
+lat_am_map <- mapCountryData(
+  mapRegion = 'Latin America',
+  nameColumnToPlot = "BIODIVERSITY",
+  addLegend = 'FALSE'
+)
+```
 
 \newpage
 
-# Exercise 03 (2 points)
+## Graph 02: 
+
+We wanted to see how access to financial services changed over time in each country. ***Need more
+TO-DOs
+Add title and subtitle
+Make sure the years at the bottom aren't overlapping
+Remove countries for which we don't have dat (Bolivia, El Salvador, and Peru)
+```{r}
+graph1 <- data %>%
+  ggplot() + 
+  geom_line(mapping = aes(x = year, y = no_of_mobile_and_internet_banking_transac_during_reference_yr_per_1_000_adults, color = economy)) +
+  facet_wrap(~ economy) +
+  scale_y_continuous(labels = scales::comma) +
+  theme_minimal()
+graph1
+```
 
 \newpage
 
-# Exercise 04 (2 points)
-
+## Graph 3
+```{r}
+#Pierina's graph
+```
 \newpage
 
-# Exercise 05 (2 points)
+## Graph 4
+```{r}
+
+```
