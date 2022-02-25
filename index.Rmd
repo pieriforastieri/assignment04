@@ -218,34 +218,32 @@ graph3 + theme(legend.position = "none")
 ## Graph 4:
 Want to right-align title here
 ```{r, message = FALSE, warning = FALSE, results = FALSE}
-# data <- data %>%
-#   mutate(
-#     region = case_when(
-#       economy == "Dominican Rep." ~ "Caribbean",
-#       economy == "Argentina" | economy == "Bolivia" | economy == "Brazil" | economy == "Chile"| economy == "Colombia" | economy == "Ecuador" | economy == "Paraguay" | economy == "Peru" | economy == "Uruguay" ~ "South America",
-#       economy == "Mexico" ~ "North America",
-#       economy == "Costa Rica" | economy == "El Salvador" | economy == "Guatemala" | economy == "Nicaragua" | economy == "Panama" ~ "Central America",
-#     ))
-#     
-# graph4 <- data %>%
-#    ggplot() +
-#   aes(x = number_of_commercial_bank_branches_per_100_000_adults , y = outstanding_deposits_with_commercial_banks_percent_of_gdp, color = economy, shape = region) +
-#   geom_point(size = 2) +
-#   theme_minimal() +
-#   labs(title = 'Year: {frame_time}', x = 'of Commercial Branches per 100,000 adults', y = 'Outstanding deposits with commercial banks as percentage of GDP') +
-#   transition_time(year) +
-#   ease_aes('linear') +
-#   labs(
-#     title = "Relationship between number of commercial bank branches and outstanding deposits in Latin American Countries",
-#     subtitle = "(from 2004 to 2020)",
-#     caption = "Source: IMF Financial Access Survey (FAS)",
-#     x = "Number of Commercial Bank Branches per 100,000 Adults",
-#     y = "Outstanding Deposits with Commercial Banks as % of GDP"
-#   )
-# graph4 + theme(legend.title = element_blank())
-# 
-# animate(graph4, duration = 17, fps = 17, width = 1000, height = 1000, renderer = gifski_renderer())
-# anim_save("graph4.gif")
-#![](graph4.gif)
+data <- data %>%
+  mutate(
+    region = case_when(
+      economy == "Dominican Rep." ~ "Caribbean",
+       economy == "Argentina" | economy == "Bolivia" | economy == "Brazil" | economy == "Chile"| economy == "Colombia" | economy == "Ecuador" | economy == "Paraguay" | economy == "Peru" | economy == "Uruguay" ~ "South America",
+       economy == "Mexico" ~ "North America",
+      economy == "Costa Rica" | economy == "El Salvador" | economy == "Guatemala" | economy == "Nicaragua" | economy == "Panama" ~ "Central America",
+   ))
+     
+ graph4 <- data %>%
+   ggplot() +
+  aes(x = number_of_commercial_bank_branches_per_100_000_adults , y = outstanding_deposits_with_commercial_banks_percent_of_gdp, color = economy, shape = region) +   geom_point(size = 2) +
+  theme_minimal() +
+  labs(title = 'Year: {frame_time}', x = 'of Commercial Branches per 100,000 adults', y = 'Outstanding deposits with commercial banks as percentage of GDP') +
+  transition_time(year) +
+   ease_aes('linear') +
+  labs(
+    title = "Relationship between number of commercial bank branches and outstanding deposits in Latin American Countries",
+    subtitle = "(from 2004 to 2020)",
+    caption = "Source: IMF Financial Access Survey (FAS)",
+    x = "Number of Commercial Bank Branches per 100,000 Adults",
+   y = "Outstanding Deposits with Commercial Banks as % of GDP"
+   )
+graph4 + theme(legend.title = element_blank())
+ 
+animate(graph4, duration = 17, fps = 17, width = 1000, height = 1000, renderer = gifski_renderer())
+anim_save("graph4.gif")
 ```
-
+![](graph4.gif)
