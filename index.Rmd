@@ -1,5 +1,5 @@
 ---
-title: "Assingment 04"
+title: "Assignment 04"
 author: "Pierina Forastieri and Sylvia Brown"
 date: "2/25/2022"
 output: 
@@ -227,7 +227,7 @@ graph3 + theme(legend.position = "none")
 ```
 \newpage
 
-## Change of Ratio of Commercial Bank Branches to Oustanding Deposits with Commercial Banks Over Time
+## Change of Ratio of Commercial Bank Branches to Outstanding Deposits with Commercial Banks Over Time
 
 Continuing our focus on outstanding deposits with commercial banks as a percentage of GDP, we were interested in a more visually intuitive representation of how the relationship between number of commercial bank branches (per 100,000 adults) to outstanding deposits had changed for each country and all countries over time. This representation was of interest because we wanted to see if a relationship (positive or negative) held between changes in number of commercial bank branches and outstanding deposits (e.g., as commercial branches closed, would outstanding deposits decrease in the same year--in which case our points would move downwards and to the left?). This visualization also allows us to identify times when countries' number of commercial bank branches or outstanding deposits seemed to change at the same time, suggesting an external factor had influenced financial access across Latin America.
 
