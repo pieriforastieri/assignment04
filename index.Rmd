@@ -85,11 +85,21 @@ graph1_1 <- data %>%
   values_to = "graph1_values",
   values_drop_na = TRUE
 ) %>%
-  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables)) +
+  mutate(economy = fct_reorder(economy, desc(graph1_values))) %>%
+  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables, show.legend = FALSE)) +
   geom_bar(position=position_dodge(width=0.8), stat = "identity") +
-  scale_x_discrete(labels="Number of Commercial Bank Branches per 100,000 Adults") + 
+  scale_x_discrete(labels="Number of Commercial Bank Branches") +
+  scale_y_continuous(labels = scales::comma) +
+  scale_fill_grey() +
+   labs(
+    title = "Number of Commercial Bank Branches in Latin America",
+    subtitle = "(per 100,000 adults)",
+    y = "Number of Commercial Bank Branches"
+  ) +
   theme_minimal()
 graph1_1
+
+graph1_1 <- graph1_1 + theme(axis.title.x = element_blank())
 
 graph1_2 <- data %>%
   filter(year == 2020, economy != "Ecuador") %>%
@@ -106,10 +116,20 @@ graph1_2 <- data %>%
   values_to = "graph1_values",
   values_drop_na = TRUE
 ) %>%
-  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables)) +
+  mutate(economy = fct_reorder(economy, desc(graph1_values))) %>%
+  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables, show.legend = FALSE)) +
   geom_bar(position=position_dodge(width=0.8), stat = "identity") +
-  scale_x_discrete(labels="Number of ATMs per 100,000 Adults") + 
+  scale_x_discrete(labels="Number of ATMs") + 
+  scale_y_continuous(labels = scales::comma) +
+  scale_fill_grey() +
+   labs(
+    title = "Number of ATMs in Latin America",
+    subtitle = "(per 100,000 adults)",
+    y = "Number of ATMs"
+  ) +
   theme_minimal()
+
+graph1_2 <- graph1_2 + theme(axis.title.x = element_blank())
 
 graph1_3 <- data %>%
   filter(year == 2020, economy != "Ecuador") %>%
@@ -117,7 +137,6 @@ graph1_3 <- data %>%
     economy,
     number_of_deposit_accounts_with_commercial_banks_per_100_000_adults,
   ) %>%
-  arrange(number_of_deposit_accounts_with_commercial_banks_per_100_000_adults) %>%
   pivot_longer(
     c(
       number_of_deposit_accounts_with_commercial_banks_per_100_000_adults
@@ -126,12 +145,28 @@ graph1_3 <- data %>%
   values_to = "graph1_values",
   values_drop_na = TRUE
 ) %>%
-  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables)) +
+  mutate(economy = fct_reorder(economy, desc(graph1_values))) %>%
+  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables, show.legend = FALSE)) +
   geom_bar(position=position_dodge(width=0.8), stat = "identity") +
   scale_x_discrete(labels="Number of Deposit Accounts with Commercial Banks per 100,000 Adults") + 
+  scale_y_continuous(labels = scales::comma) +
+  scale_fill_grey() +
+   labs(
+    title = "Number of Deposits Accounts in Latin America",
+    subtitle = "(per 100,000 adults)",
+    y = "Number of Deposit Accounts"
+  ) +
   theme_minimal()
 
-graph1_1 + graph1_2 + graph1_3
+graph1_3 <- graph1_3 + theme(axis.title.x = element_blank())
+
+graph1_object <- (graph1_1 + plot_spacer() + graph1_2) / (plot_spacer() + graph1_3 + plot_spacer())
+
+
+graph1_object + plot_annotation(
+  title = 'Summary of Financial Access Indicators',
+  subtitle = '2020',
+  caption = 'Source: IMF Financial Access Survey (FAS)') + plot_layout(widths = c(2, 1))
 ```
 
 \newpage
@@ -159,7 +194,7 @@ graph2 <- data %>%
   facet_wrap(~ economy) +
   scale_y_continuous(labels = scales::comma) +
    labs(
-    title = "Number of Mobile and Internet Banking Transactions in Latin American Countries",
+    title = "Number of Mobile and Internet Banking Transactions in Latin America",
     subtitle = "(during the reference year per 1,000 adults)",
     x = "Years",
     y = "Number of Mobile and Internet Transactions"
@@ -182,7 +217,7 @@ graph3 <- data %>%
   mutate(economy = fct_reorder(economy, outstanding_deposits_with_commercial_banks_percent_of_gdp)) %>%
   ggplot() +
   aes(x = outstanding_deposits_with_commercial_banks_percent_of_gdp , y = economy, show.legend = FALSE) +
-  geom_col(width = 0.7) +
+  geom_col(width = 0.7, alpha = 0.9, fill = "light blue") +
   geom_text(aes(label = round(outstanding_deposits_with_commercial_banks_percent_of_gdp, 1)), hjust = -0.1) +
   labs(
     title = "Outstanding Deposits with Commercial Banks in Latin American Countries",
@@ -203,24 +238,24 @@ Continuing our focus on outstanding deposits with commercial banks as a percenta
 
 The movement in the visualization appears mostly random, although future visualizations and tests of statistical significance are necessary to confirm this is the case. The most notable trend this graph suggests is the sharp increase in outstanding deposits with commercial banks as % of GDP towards the end of the years covered by the data set (2019-2020). Although identifying exactly the cause of this increase is beyond the scope of this report, this research question may be of interest to other researchers interested in issues of financial access.
 ```{r, message = FALSE, warning = FALSE, results = FALSE}
-    
 graph4 <- data %>%
    ggplot() +
   aes(x = number_of_commercial_bank_branches_per_100_000_adults , y = outstanding_deposits_with_commercial_banks_percent_of_gdp, color = economy, shape = region) +
   geom_point(size = 2) +
   theme_minimal() +
+  labs(title = 'Year: {frame_state}', x = 'of Commercial Branches per 100,000 adults', y = 'Outstanding deposits with commercial banks as percentage of GDP') +
+  transition_time(year) +
+  ease_aes('linear') +
   labs(
-    title = 'Relationship between number of commercial bank branches and outstanding deposits in Latin American Countries: {year}',
+    title = "Relationship between number of commercial bank branches and outstanding deposits in Latin America Countries",
     subtitle = "(from 2004 to 2020)",
     caption = "Source: IMF Financial Access Survey (FAS)",
     x = "Number of Commercial Bank Branches per 100,000 Adults",
     y = "Outstanding Deposits with Commercial Banks as % of GDP"
-  ) +
-  transition_time(year) +
-  ease_aes('linear') +
-graph4 + theme(legend.title = element_blank())
+  )
 
-animate(graph4, duration = 17, fps = 17, width = 1000, height = 1000, renderer = gifski_renderer())
+animate(graph4, duration = 17, fps = 17, width = 800, height = 800, renderer = gifski_renderer())
 anim_save("graph4.gif")
 ```
+
 ![](graph4.gif)
