@@ -37,6 +37,7 @@ library(gganimate)
 library(gifski)
 library(sp)
 library(patchwork)
+library(forcats)
 ```
 
 
@@ -56,7 +57,11 @@ data <- data %>%
 
 # Four ggplot2 graphs (4 points)
 
-## Graph 01: 
+## Overview of Financial Access Indicators
+
+To start with a broad overview about the financial access in Latin American countries for which data were available, we looked at the number of commercial bank branches, number of ATMs, and number of deposit accounts per 100,000 adults in each country. We see that although some countries have a high number of commercial bank branches, such as Bolivia, Guatemala, Panama, this aspect of financial access does not translate to a high number of deposits accounts, as these countries fall in the middle or low part of the distribution of the deposits accounts indicators. 
+
+On the other hand, the differences in number of commercial bank branches among countries is very large, with more than 60 per 100,000 in Bolivia but fewer than 20 in Peru. However, this factor does not appear to be associated with the amount of deposits accounts, as Peru stands in the third position for this indicator. We see a similar trend hold with the number of ATMs per 100,000 adults as well.
 
 ```{r}
 data <- data %>%
@@ -64,29 +69,34 @@ data <- data %>%
          number_of_deposit_accounts_with_commercial_banks_per_1_000_adults * 100)
 
 data$number_of_deposit_accounts_with_commercial_banks_per_100_000_adults <- as.integer(data$number_of_deposit_accounts_with_commercial_banks_per_100_000_adults)
-
-    # number_of_at_ms_per_100_000_adults,
-    # number_of_deposit_accounts_with_commercial_banks_per_100_000_adults
-
 graph1_1 <- data %>%
   filter(year == 2020, economy != "Ecuador") %>%
   select(
     economy,
-    number_of_deposit_accounts_with_commercial_banks_per_100_000_adults,
+    number_of_commercial_bank_branches_per_100_000_adults,
   ) %>%
-  #arrange(number_of_commercial_bank_branches_per_100_000_adults) %>%
   pivot_longer(
     c(
-      number_of_deposit_accounts_with_commercial_banks_per_100_000_adults
+      number_of_commercial_bank_branches_per_100_000_adults
     ),
   names_to = "graph1_variables",
   values_to = "graph1_values",
   values_drop_na = TRUE
 ) %>%
-  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables)) +
+  mutate(economy = fct_reorder(economy, desc(graph1_values))) %>%
+  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables, show.legend = FALSE)) +
   geom_bar(position=position_dodge(width=0.8), stat = "identity") +
-  scale_x_discrete(labels="Number of Commercial Bank Branches per 100,000 Adults") + 
+  scale_x_discrete(labels="Number of Commercial Bank Branches") +
+  scale_y_continuous(labels = scales::comma) +
+  scale_fill_grey() +
+   labs(
+    title = "Number of Commercial Bank Branches in Latin America",
+    subtitle = "(per 100,000 adults)",
+    y = "Number of Commercial Bank Branches"
+  ) +
   theme_minimal()
+
+graph1_1 <- graph1_1 + theme(axis.title.x = element_blank())
 
 graph1_2 <- data %>%
   filter(year == 2020, economy != "Ecuador") %>%
@@ -103,10 +113,20 @@ graph1_2 <- data %>%
   values_to = "graph1_values",
   values_drop_na = TRUE
 ) %>%
-  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables)) +
+  mutate(economy = fct_reorder(economy, desc(graph1_values))) %>%
+  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables, show.legend = FALSE)) +
   geom_bar(position=position_dodge(width=0.8), stat = "identity") +
-  scale_x_discrete(labels="Number of ATMs per 100,000 Adults") + 
+  scale_x_discrete(labels="Number of ATMs") + 
+  scale_y_continuous(labels = scales::comma) +
+  scale_fill_grey() +
+   labs(
+    title = "Number of ATMs in Latin America",
+    subtitle = "(per 100,000 adults)",
+    y = "Number of ATMs"
+  ) +
   theme_minimal()
+
+graph1_2 <- graph1_2 + theme(axis.title.x = element_blank())
 
 graph1_3 <- data %>%
   filter(year == 2020, economy != "Ecuador") %>%
@@ -114,7 +134,6 @@ graph1_3 <- data %>%
     economy,
     number_of_deposit_accounts_with_commercial_banks_per_100_000_adults,
   ) %>%
-  arrange(number_of_deposit_accounts_with_commercial_banks_per_100_000_adults) %>%
   pivot_longer(
     c(
       number_of_deposit_accounts_with_commercial_banks_per_100_000_adults
@@ -123,20 +142,37 @@ graph1_3 <- data %>%
   values_to = "graph1_values",
   values_drop_na = TRUE
 ) %>%
-  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables)) +
+  mutate(economy = fct_reorder(economy, desc(graph1_values))) %>%
+  ggplot(aes(fill = economy, y = graph1_values, x = graph1_variables, show.legend = FALSE)) +
   geom_bar(position=position_dodge(width=0.8), stat = "identity") +
-  scale_x_discrete(labels="Number of Deposit Acounts with Commercial Banks per 100,000 Adults") + 
+  scale_x_discrete(labels="Number of Deposit Acounts with Commercial Banks") + 
+  scale_y_continuous(labels = scales::comma) +
+  scale_fill_grey() +
+   labs(
+    title = "Number of Deposits Accounts in Latin America",
+    subtitle = "(per 100,000 adults)",
+    y = "Number of Deposit Accounts"
+  ) +
   theme_minimal()
 
-graph1_1 + graph1_2 + graph1_3
+graph1_3 <- graph1_3 + theme(axis.title.x = element_blank())
+
+graph1_object <- (graph1_1 + plot_spacer() + graph1_2) / (plot_spacer() + graph1_3 + plot_spacer())
+
+
+graph1_object + plot_annotation(
+  title = 'Summary of Financial Access Indicators',
+  subtitle = '2020',
+  caption = 'Source: IMF Financial Access Survey (FAS)') + plot_layout(widths = c(2, 1))
 ```
 
 \newpage
 
-## Graph 02: 
+## Role of Technology in the access to financial services  
 
-We wanted to see how access to financial services changed over time in each country. ***Need more
-TO-DOs
+When we look at the use of mobile and internet transactions we see that the majority of countries have less than 100,000 transactions per 1,000 adults each year. This can show a similar level of the dependence of the each country users in this new products. But we can also see that Brazil has a very different dynamic compared to its peers in the region, having an increasing trend overtime from approximately 50,000 before 2010 to more than 300,000 in 2020.
+
+Although, we can see a very clear trend in Brazil it is certain to confirm that we would be able to see this trend for all countries in the long run but at a lower speed. We can expect this to happen not just looking at the shape of the lines but thinking about how techology is getting more embedded in people's lives.
 
 ```{r}
 graph2 <- data %>%
@@ -146,7 +182,7 @@ graph2 <- data %>%
   facet_wrap(~ economy) +
   scale_y_continuous(labels = scales::comma) +
    labs(
-    title = "Number of Mobile and Internet Banking Transactions in Latin American Countries",
+    title = "Number of Mobile and Internet Banking Transactions in Latin America",
     subtitle = "(during the reference year per 1,000 adults)",
     caption = "Source: IMF Financial Access Survey (FAS)",
     x = "Years",
@@ -161,12 +197,11 @@ graph2 + theme(legend.position = "none")
 ## Graph 3: bar graph
 ```{r}
 graph3 <- data %>% 
-  filter(year == 2020, economy != "Ecuador" ) %>%
+  filter(year == 2020, economy != "Ecuador") %>%
   ggplot() +
   aes(x = outstanding_deposits_with_commercial_banks_percent_of_gdp , y = economy, show.legend = FALSE) +
-  geom_col(aes(fill = economy), width = 0.7) +
+  geom_col(width = 0.7, alpha = 0.9, fill = "light blue") +
   geom_text(aes(label = round(outstanding_deposits_with_commercial_banks_percent_of_gdp, 1)), hjust = -0.1) +
-  scale_fill_grey() +
   labs(
     title = "Outstanding Deposits with Commercial Banks in Latin American Countries",
     subtitle = "(as % of GDP)",
@@ -183,33 +218,34 @@ graph3 + theme(legend.position = "none")
 ## Graph 4:
 Want to right-align title here
 ```{r, message = FALSE, warning = FALSE, results = FALSE}
-data2 <- data %>%
-  mutate(
-    region = case_when(
-      economy = "Dominican Rep." ~ "Caribbean",
-      economy == "Argentina" | economy == "Bolivia" | economy == "Brazil" | economy == "Chile"| economy == "Colombia" | economy == "Ecuador" | economy == "Paraguay" | economy == "Peru" | economy == "Uruguay" ~ "South America",
-      economy == "Mexico" ~ "North America",
-      economy == "Costa Rica" | economy == "El Salvador" | economy == "Guatemala" | economy == "Nicaragua" | economy == "Panama" ~ "Central America",
-    ))
-    
-graph4 <- data %>%
-   ggplot() +
-  aes(x = number_of_commercial_bank_branches_per_100_000_adults , y = outstanding_deposits_with_commercial_banks_percent_of_gdp, color = economy, shape = region) +
-  geom_point(size = 2) +
-  theme_minimal() +
-  labs(title = 'Year: {frame_time}', x = 'of Commercial Branches per 100,000 adults', y = 'Outstanding deposits with commercial banks as percentage of GDP') +
-  transition_time(year) +
-  ease_aes('linear') +
-  labs(
-    title = "Relationship between number of commercial bank branches and outstanding deposits in Latin American Countries",
-    subtitle = "(from 2004 to 2020)",
-    caption = "Source: IMF Financial Access Survey (FAS)",
-    x = "Number of Commercial Bank Branches per 100,000 Adults",
-    y = "Outstanding Deposits with Commercial Banks as % of GDP"
-  )
-graph4 + theme(legend.title = element_blank())
-
-animate(graph4, duration = 17, fps = 17, width = 800, height = 800, renderer = gifski_renderer())
-anim_save("graph4.gif")
+# data <- data %>%
+#   mutate(
+#     region = case_when(
+#       economy == "Dominican Rep." ~ "Caribbean",
+#       economy == "Argentina" | economy == "Bolivia" | economy == "Brazil" | economy == "Chile"| economy == "Colombia" | economy == "Ecuador" | economy == "Paraguay" | economy == "Peru" | economy == "Uruguay" ~ "South America",
+#       economy == "Mexico" ~ "North America",
+#       economy == "Costa Rica" | economy == "El Salvador" | economy == "Guatemala" | economy == "Nicaragua" | economy == "Panama" ~ "Central America",
+#     ))
+#     
+# graph4 <- data %>%
+#    ggplot() +
+#   aes(x = number_of_commercial_bank_branches_per_100_000_adults , y = outstanding_deposits_with_commercial_banks_percent_of_gdp, color = economy, shape = region) +
+#   geom_point(size = 2) +
+#   theme_minimal() +
+#   labs(title = 'Year: {frame_time}', x = 'of Commercial Branches per 100,000 adults', y = 'Outstanding deposits with commercial banks as percentage of GDP') +
+#   transition_time(year) +
+#   ease_aes('linear') +
+#   labs(
+#     title = "Relationship between number of commercial bank branches and outstanding deposits in Latin American Countries",
+#     subtitle = "(from 2004 to 2020)",
+#     caption = "Source: IMF Financial Access Survey (FAS)",
+#     x = "Number of Commercial Bank Branches per 100,000 Adults",
+#     y = "Outstanding Deposits with Commercial Banks as % of GDP"
+#   )
+# graph4 + theme(legend.title = element_blank())
+# 
+# animate(graph4, duration = 17, fps = 17, width = 1000, height = 1000, renderer = gifski_renderer())
+# anim_save("graph4.gif")
+#![](graph4.gif)
 ```
-![](graph4.gif)
+
