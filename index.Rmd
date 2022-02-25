@@ -178,15 +178,15 @@ Want to right-align title here
 data2 <- data %>%
   mutate(
     region = case_when(
-      economy == "Argentina" | economy == "Bolivia" | economy == "Brazil" | economy == "Chile"| economy == "Columbia" ~ "Caribbean",
-      economy == 2 ~ "South America",
-      economy == 3 ~ "North America",
-      economy == 4 ~ "Central America",
-    )
+      economy = "Dominican Rep." ~ "Caribbean",
+      economy == "Argentina" | economy == "Bolivia" | economy == "Brazil" | economy == "Chile"| economy == "Colombia" | economy == "Ecuador" | economy == "Paraguay" | economy == "Peru" | economy == "Uruguay" ~ "South America",
+      economy == "Mexico" ~ "North America",
+      economy == "Costa Rica" | economy == "El Salvador" | economy == "Guatemala" | economy == "Nicaragua" | economy == "Panama" ~ "Central America",
+    ))
     
 graph4 <- data %>%
    ggplot() +
-  aes(x = number_of_commercial_bank_branches_per_100_000_adults , y = outstanding_deposits_with_commercial_banks_percent_of_gdp, color = economy) +
+  aes(x = number_of_commercial_bank_branches_per_100_000_adults , y = outstanding_deposits_with_commercial_banks_percent_of_gdp, color = economy, shape = region) +
   geom_point(size = 2) +
   theme_minimal() +
   labs(title = 'Year: {frame_time}', x = 'of Commercial Branches per 100,000 adults', y = 'Outstanding deposits with commercial banks as percentage of GDP') +
